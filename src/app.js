@@ -20,12 +20,31 @@ app.get('/contracts/:id',getProfile ,async (req, res) =>{
     where: {
       id,
       [Op.or]: [
-      { ContractorId: profileId },
-      { ClientId: profileId },
+        { ContractorId: profileId },
+        { ClientId: profileId },
       ],
     },
   })
   if(!contract) return res.status(404).end()
   res.json(contract)
 })
+
+
+app.get('/contracts',getProfile ,async (req, res) =>{
+  const {Contract} = req.app.get('models')
+  const profileId = req.profile.id
+  const contract = await Contract.findAll({
+    where: {
+      [Op.or]: [
+        { ClientId: profileId },
+        { ContractorId: profileId },
+      ],
+      status: { [Op.ne]: 'terminated' },
+    },
+  })
+  if(!contract) return res.status(404).end()
+  res.json(contract)
+})
+
+
 module.exports = app;
