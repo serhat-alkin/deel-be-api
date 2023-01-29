@@ -72,6 +72,8 @@ Below is a list of the implemented API's for the application.
 - I adopted a controller-service-dao architecture, in which the service layer handles the business logic and the dao layer manages interactions with the ORM to keep the codebase organized and scalable.
 - I tried to avoid having harcoded content (error messages, object types, error codes etc..) in the code. 
 
+This task required approximately 3.5 hours to complete.
+
 ## Future improvements
 - DAO functions can be separated based on the objects they interact with. Keeping all ORM interactions in a single file could lead to complexity and maintenance issues in the future.
 
