@@ -8,10 +8,13 @@ const { getNonPaidJobs, payForJob } = require('./controllers/jobs');
 const { deposit } = require('./controllers/balances');
 const { getBestProfession, getBestClients } = require('./controllers/admin');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./config/swagger.json');
 const app = express();
 app.use(bodyParser.json());
 app.set('sequelize', sequelize)
 app.set('models', sequelize.models)
+app.use('/deel-api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/contracts/:id', getProfile, getContractById);
 app.get('/contracts', getProfile, getNotTerminatedContractsOfUser);

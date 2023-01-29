@@ -1,0 +1,240 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Deel",
+    "description": "Deel API",
+    "version": "1.0.0"
+  },
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/contracts/{id}": {
+      "get": {
+        "summary": "Contracts Endpoint : Get Contracts By Id",
+        "parameters": [
+          {
+            "type": "integer",
+            "in": "path",
+            "name": "id",
+            "required": true
+            
+          },
+          {
+            "type": "integer",
+            "in": "header",
+            "name": "profile_id",
+            "required": true
+          }
+          
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/contracts": {
+      "get": {
+        "summary":"Contracts Endpoint : Get Non Terminated User Contracts",
+        "parameters": [
+          {
+            "type": "integer",
+            "in": "header",
+            "name": "profile_id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/jobs/unpaid": {
+      "get": {
+        "summary": "Jobs Endpoint : Get Nonpaid Jobs For Active Contracts",
+        "parameters": [
+          {
+            "type": "integer",
+            "in": "header",
+            "name": "profile_id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/jobs/{id}/pay": {
+      "post": {
+        "summary": "Jobs Endpoint : Pay For A Job",
+        "parameters": [
+          {
+            "type": "integer",
+            "in": "header",
+            "name": "profile_id",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "400": {
+            "description": "Insufficient funds/Job is already paid"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/balances/deposit/{userId}": {
+      "post": {
+        "summary": "Balance Endpoint : Deposit Money",
+        "parameters": [
+          {
+            "type": "integer",
+            "in": "path",
+            "name": "userId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number"
+                }
+              }
+            },
+            "in": "body",
+            "name": "amount",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Deposit amount is exceeded"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/admin/best-profession": {
+      "get": {
+        "summary": "Admin Endpoint: Get Best Professions",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "startDate",
+            "default": "2020-07-08T00:00:00.000Z",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "endDate",
+            "default": "2021-08-31T00:00:00.000Z",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/admin/best-clients": {
+      "get": {
+        "summary": "Admin Endpoint: Get Best Clients",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "startDate",
+            "default": "2020-07-18T00:00:00.000Z",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "endDate",
+            "default": "2021-08-31T00:00:00.000Z",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "in": "query",
+            "name": "limit",
+            "default": 2,
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  }
+}
