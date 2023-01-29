@@ -22,7 +22,6 @@ const getBestClients = async (req, res, next) => {
       req.query.endDate, 
       req.query.limit,
     );
-    console.log('result*****', result)
     if (result?.length === 0) throw new HttpError(httpStatus.NOT_FOUND, httpStatus['404_MESSAGE']);
     return res.json(result);
   } catch (error) {
