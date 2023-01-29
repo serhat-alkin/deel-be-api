@@ -16,7 +16,7 @@ const getContractById = async (req, res, next) => {
   }
 };
 
-const getNotTerminatedContractsOfUser = async (req, res) => {
+const getNotTerminatedContractsOfUser = async (req, res, next) => {
   try {
     const result = await ContractService.getContractsOfUserByStatus(
       req.profile.id,
