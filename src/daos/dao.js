@@ -1,5 +1,6 @@
 ﻿const { Op } = require('sequelize');
 const { Job, Contract, Profile } = require('../model');
+const { sequelize } = require('../model');
 
 const retrieveContractById = async(id, userId) => {
   return Contract.findOne({
@@ -105,6 +106,83 @@ const retrieveSumOfNonPaidJobs = async(clientId, status) => {
   });
 }
 
+const retrieveBestProfession = async(startDate, endDate) => {
+  const profiles = await Profile.findAll({
+    attributes: ['profession', [sequelize.fn('SUM', sequelize.col('price')), 'sumEarnings']],
+    include: [
+      {
+        model: Contract,
+        as: 'Contractor',
+        attributes: [],
+        required: true,
+        include: [
+          {
+            model: Job,
+            required: true,
+            attributes: [],
+            where: {
+              paymentDate: {
+                [Op.gte]: startDate,
+                [Op.lte]: endDate,
+              },
+              paid: true,
+            },
+          },
+        ],
+      },
+    ],
+    where: {
+      type: 'contractor',
+    },
+    group: ['profession'],
+    order: [[sequelize.col('sumEarnings'), 'DESC']],
+    subQuery: false,
+    limit: 1,
+  });
+
+  if (!profiles.length) {
+    return null;
+  }
+
+  return profiles[0].get({ plain: true });
+}
+
+
+const retrieveBestClients = async(startDate, endDate, limit) => {
+  const results = await Job.findAll({
+    attributes: [[sequelize.fn('sum', sequelize.col('price')), 'paid']],
+    order: [[sequelize.fn('sum', sequelize.col('price')), 'DESC']],
+    group: ['Contract.Client.id'],
+    where: {
+      paid: true,
+      paymentDate: {
+        [Op.gte]: startDate,
+        [Op.lte]: endDate,
+      },
+    },
+    limit,
+    include: [
+      {
+        model: Contract,
+        attributes: ['id'],
+        include: [
+          {
+            model: Profile,
+            as: 'Client',
+            where: { type: 'client' },
+            attributes: ['id', 'firstName', 'lastName'],
+          },
+        ],
+      },
+    ],
+  });
+
+  return results.map((job) => ({
+    id: job.Contract.Client.id,
+    fullName: `${job.Contract.Client.firstName} ${job.Contract.Client.lastName}`,
+    paid: job.paid,
+  }));
+}
 
 module.exports = {
   retrieveContractById,
@@ -115,4 +193,6 @@ module.exports = {
 	updateProfile,
 	updateJob,
 	retrieveSumOfNonPaidJobs,
+	retrieveBestProfession,
+	retrieveBestClients,
 };
