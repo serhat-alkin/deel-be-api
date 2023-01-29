@@ -5,16 +5,12 @@ const { retrieveProfile, retrieveSumOfNonPaidJobs, updateProfile } = require('..
 const deposit = async (client, amount, transaction = null) => {
   const sum = await retrieveSumOfNonPaidJobs(client.id, CONTRACT_STATUS.IN_PROGRESS);
   const maxDeposit = sum * CLIENT_MAX_DEPOSIT;
-  console.log('sum***', sum);
-  console.log('CLIENT_MAX_DEPOSIT***', CLIENT_MAX_DEPOSIT);
-  console.log('amount***', amount);
   if (amount > maxDeposit) throw new HttpError(400, CUSTOM_ERRORS.DEPOSIT_AMOUNT_EXCEEDED);
   await updateProfile(
     client,
     {balance: Number((client.balance + amount).toFixed(2))},
     transaction
   )
-  console.log('client***', client.balance);
   return client;
 }
 
